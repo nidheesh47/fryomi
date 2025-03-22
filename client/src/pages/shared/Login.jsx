@@ -1,8 +1,7 @@
 import React from "react";
 import { axiosInstance } from "../../config/axiosInstance";
-import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Login = ({ isOpen, onClose, onOpenSignUp }) => {
@@ -11,24 +10,25 @@ const Login = ({ isOpen, onClose, onOpenSignUp }) => {
 
   const user = {
     login_api: "/user/login",
-    profile_route: "/",
-    signup_route: { onOpenSignUp },
+    profile_route: "/", // Redirect here after login
   };
 
   const onSubmit = async (data) => {
     try {
-      const response = await axiosInstance.request({
-        method: "POST",
-        url: user.login_api,
-        data,
+      const response = await axiosInstance.post(user.login_api, data, {
+        withCredentials: true, // 🔹 Ensure cookies are sent
       });
-      if (Cookies.get("token")) {
-        toast.success("Log-in success");
-        window.location.reload();
+
+      if (response.data.success) {
+        // 🔹 Check backend response
+        toast.success("Log-in successful!");
+        navigate(user.profile_route); // 🔹 Redirect instead of reloading
+      } else {
+        toast.error(response.data.message || "Login failed!");
       }
     } catch (error) {
-      toast.error("Log-in failed");
-      console.log(error);
+      toast.error(error.response?.data?.message || "Log-in failed!");
+      console.error(error);
     }
   };
 
@@ -58,7 +58,7 @@ const Login = ({ isOpen, onClose, onOpenSignUp }) => {
               </label>
               <input
                 type="email"
-                {...register("email")}
+                {...register("email", { required: true })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 placeholder="Enter your email"
               />
@@ -71,7 +71,7 @@ const Login = ({ isOpen, onClose, onOpenSignUp }) => {
               </label>
               <input
                 type="password"
-                {...register("password")}
+                {...register("password", { required: true })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 placeholder="Enter your password"
               />
