@@ -30,7 +30,8 @@ function UserHeader() {
   const userLogout = async () => {
     try {
       await axiosInstance({ method: "POST", url: "user/logout" });
-      if (!Cookies.get("token")) toast.success("Logout successfully");
+      Cookies.remove("token");
+      toast.success("Logout successfully");
       navigate("/");
     } catch (error) {
       console.error(error);

@@ -1,8 +1,9 @@
 import React from "react";
 import { axiosInstance } from "../../config/axiosInstance";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 const Login = ({ isOpen, onClose, onOpenSignUp }) => {
   const { register, handleSubmit } = useForm();
@@ -10,24 +11,27 @@ const Login = ({ isOpen, onClose, onOpenSignUp }) => {
 
   const user = {
     login_api: "/user/login",
-    profile_route: "/", // Redirect here after login
+    profile_route: "/",
+    signup_route: { onOpenSignUp },
   };
 
   const onSubmit = async (data) => {
     try {
-      const response = await axiosInstance.post(user.login_api, data, {
-        withCredentials: true, // 🔹 Ensure cookies are sent
+      const response = await axiosInstance.request({
+        method: "POST",
+        url: user.login_api,
+        data,
       });
 
-      if (response.data.success) {
-        toast.success("response.data.message");
-        navigate("/");
-      } else {
-        toast.error(response.data.message || "Login failed!");
+      toast.success("Log-in success");
+      Cookies.set("authToken", "true", { expires: 1 });
+      const token = Cookies.get("token");
+      if (token) {
+        window.location.reload();
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Log-in failed!");
-      console.error(error);
+      toast.error("Log-in failed");
+      console.log(error);
     }
   };
 
@@ -57,7 +61,7 @@ const Login = ({ isOpen, onClose, onOpenSignUp }) => {
               </label>
               <input
                 type="email"
-                {...register("email", { required: true })}
+                {...register("email")}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 placeholder="Enter your email"
               />
@@ -70,7 +74,7 @@ const Login = ({ isOpen, onClose, onOpenSignUp }) => {
               </label>
               <input
                 type="password"
-                {...register("password", { required: true })}
+                {...register("password")}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 placeholder="Enter your password"
               />
