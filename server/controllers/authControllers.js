@@ -63,10 +63,11 @@ exports.login = async (req, res) => {
     }
     const token = generateToken(userExist, "user");
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
-      path: "/",
+      httpOnly: true, // Prevent client-side JavaScript access
+      secure: process.env.NODE_ENV === "production", // Ensure cookies are only sent over HTTPS in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Allow cross-origin requests in production
+      path: "/", // Accessible across all paths
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     });
 
     res.json({ message: " Login succssfully" });
@@ -155,9 +156,16 @@ exports.resetPassword = async (req, res) => {
 //Logout
 exports.logout = (req, res) => {
   try {
-    res.cookie("token", token);
+    // Clear the token cookie
+    res.cookie("token", "", {
+      httpOnly: true, // Ensure the cookie cannot be accessed via JavaScript
+      secure: process.env.NODE_ENV === "production", // Ensure cookies are only sent over HTTPS in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Allow cross-origin requests in production
+      path: "/", // Ensure the cookie is accessible across all paths
+      expires: new Date(0), // Set expiration to a past date to clear the cookie
+    });
 
-    res.status(200).json({ message: "Logout Successfully" });
+    res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
