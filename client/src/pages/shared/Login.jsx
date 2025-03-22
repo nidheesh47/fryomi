@@ -20,9 +20,8 @@ const Login = ({ isOpen, onClose, onOpenSignUp }) => {
       });
 
       if (response.data.success) {
-        // 🔹 Check backend response
-        toast.success("Log-in successful!");
-        navigate(user.profile_route); // 🔹 Redirect instead of reloading
+        toast.success("response.data.message");
+        navigate("/");
       } else {
         toast.error(response.data.message || "Login failed!");
       }
