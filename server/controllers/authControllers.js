@@ -63,10 +63,9 @@ exports.login = async (req, res) => {
     }
     const token = generateToken(userExist, "user");
     res.cookie("token", token, {
-      httpOnly: process.env.NODE_ENV === "production",
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      // maxAge: 60 * 60 * 1000,
+      sameSite: "none",
     });
 
     res.json({ message: " Login succssfully" });
@@ -155,7 +154,11 @@ exports.resetPassword = async (req, res) => {
 //Logout
 exports.logout = (req, res) => {
   try {
-    res.clearCookie("token");
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+    });
 
     res.status(200).json({ message: "Logout Successfully" });
   } catch (error) {

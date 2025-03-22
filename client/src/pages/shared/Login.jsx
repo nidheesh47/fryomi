@@ -2,6 +2,7 @@ import React from "react";
 import { axiosInstance } from "../../config/axiosInstance";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const Login = ({ isOpen, onClose, onOpenSignUp }) => {
@@ -20,12 +21,11 @@ const Login = ({ isOpen, onClose, onOpenSignUp }) => {
         method: "POST",
         url: user.login_api,
         data,
-        withCredentials: true, // Ensure cookies are sent
       });
-      console.log("response===", response);
-
-      toast.success("Log-in success");
-      window.location.reload();
+      if (Cookies.get("token")) {
+        toast.success("Log-in success");
+        window.location.reload();
+      }
     } catch (error) {
       toast.error("Log-in failed");
       console.log(error);

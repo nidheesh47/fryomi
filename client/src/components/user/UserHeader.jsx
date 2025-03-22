@@ -13,7 +13,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axiosInstance";
 import toast from "react-hot-toast";
-
+import Cookies from "js-cookie";
 const navigation = [
   { name: "About Us", href: "/about", key: "about" },
   { name: "Restaurants", href: "/all-restuarant", key: "restaurants" },
@@ -29,9 +29,8 @@ function UserHeader() {
 
   const userLogout = async () => {
     try {
-      await axiosInstance({ method: "PUT", url: "user/logout" });
-      localStorage.clear();
-      toast.success("Logout successfully");
+      await axiosInstance({ method: "POST", url: "user/logout" });
+      if (!Cookies.get("token")) toast.success("Logout successfully");
       navigate("/");
     } catch (error) {
       console.error(error);
