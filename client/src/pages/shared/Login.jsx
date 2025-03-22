@@ -24,7 +24,6 @@ const Login = ({ isOpen, onClose, onOpenSignUp }) => {
       });
 
       toast.success("Log-in success");
-      Cookies.set("authToken", "true", { expires: 1 });
       const token = Cookies.get("token");
       if (token) {
         window.location.reload();

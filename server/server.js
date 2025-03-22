@@ -26,14 +26,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [process.env.CLIENT_URL, process.env.ADMIN_URL], // Allow requests from these origins
-    credentials: true, // Allow cookies and credentials
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Allow these HTTP methods
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-Requested-With",
-      "Accept",
-    ], // Allow these headers
+    credentials: true,
   })
 );
 
