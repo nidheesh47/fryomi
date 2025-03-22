@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  user-select: none;
+}
+
+body {
+  font-family: "Poppins", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.cover {
+  background-image: url("/background.avif");
+  background-size: cover;
+  height: 60vh;
+  background-repeat: no-repeat;
+}
+/* .search{
+    width: 90vh;
+    height: 7vh;
+  }
+  */
